@@ -1,0 +1,68 @@
+@startuml
+title TS Dependency Analyzer + GAI in GitHub Ecosystem (Component)
+
+actor Developer
+
+package "Developer Environment" {
+  [VS Code Extension] as vscode
+  [CLI Analyzer] as cli
+}
+
+package "GitHub Platform" {
+  [GitHub Repo] as repo
+  [Pull Request UI] as prui
+  [Webhooks] as wh
+  [GitHub Actions Runner] as actions
+  [Code Scanning / SARIF] as codescan
+  [Checks API] as checks
+  [Artifacts & Pages] as artifacts
+}
+
+package "Analyzer Core" {
+  [Quick Import Scan] as quick
+  [Semantic Analyzer (TS Compiler API / ts-morph)] as sema
+  [Graph Builder] as graph
+  [DSM Generator] as dsm
+  [Policy Engine] as policy
+  [Report Generator] as report
+}
+
+package "GAI Services" {
+  [GAI Orchestrator] as gai
+  [LLM Provider (Copilot/LLM API)] as llm
+}
+
+database "Graph/Results Store" as store
+
+Developer --> vscode : author code\nreview hints
+vscode --> cli : run local analysis
+cli --> quick
+cli --> sema
+sema --> graph
+graph --> dsm
+dsm --> policy
+policy --> report
+report --> vscode : local HTML/JSON/GraphML
+
+repo --> wh
+wh --> actions : on push/PR
+actions --> cli : CI analysis step
+actions --> graph
+actions --> dsm
+actions --> policy
+actions --> report
+report --> artifacts : upload DSM/Graph/HTML
+report --> codescan : emit SARIF (optional)
+policy --> checks : pass/fail with messages
+
+graph --> gai : graph JSON
+dsm --> gai : DSM matrix/metrics
+gai --> llm : prompt with context (edges, cycles, layers, policy hits)
+llm --> gai : explanations, rule drafts, refactor suggestions
+gai --> report : augment with NL insights & code suggestions
+gai --> prui : PR comment with summaries & fix plans
+
+store <--> graph
+store <--> dsm
+store <--> report
+@enduml

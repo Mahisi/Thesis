@@ -1,0 +1,44 @@
+@startuml
+title Core classes with GAI extension points (simplified)
+
+class ProjectAnalyzer {
+  +analyze(projectPath): AnalysisResult
+  -runQuickScan(): ImportEdges
+  -runSemanticPass(): SymbolEdges
+}
+
+class GraphBuilder {
+  +build(importEdges, symbolEdges): DepGraph
+  +toGraphML(): string
+}
+class DSMGenerator {
+  +fromGraph(graph: DepGraph): DSM
+}
+class PolicyEngine {
+  +evaluate(graph, dsm): PolicyReport
+  +rules: Rule[]
+}
+class ReportGenerator {
+  +render(result: AnalysisResult, gaiNotes?: GaiNotes): HtmlReport
+  +toSarif(): Sarif
+}
+class GAIClient {
+  +summarize(graph, dsm, policyReport): GaiNotes
+  +suggestRules(graph): Rule[]
+  +suggestRefactors(graph): RefactorPlan[]
+}
+class AnalysisResult {
+  +graph: DepGraph
+  +dsm: DSM
+  +metrics: Metrics
+  +policy: PolicyReport
+}
+
+ProjectAnalyzer -> GraphBuilder
+ProjectAnalyzer -> DSMGenerator
+ProjectAnalyzer -> PolicyEngine
+ProjectAnalyzer -> ReportGenerator
+ReportGenerator --> GAIClient : optional enrichment
+GAIClient ..> "LLM API" : HTTPS
+
+@enduml

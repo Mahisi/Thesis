@@ -1,0 +1,26 @@
+@startuml
+title PR-time CI: Analyzer + GAI Insights
+
+actor Dev as Developer
+participant Repo as "GitHub Repo"
+participant Actions as "GH Actions"
+participant CLI as "Analyzer CLI"
+participant Core as "Analyzer Core"
+participant GAI as "GAI Orchestrator"
+participant LLM as "LLM Provider"
+participant Checks as "Checks API"
+participant PR as "PR UI"
+
+Developer -> Repo : Push branch / Open PR
+Repo -> Actions : webhook (push/pull_request)
+Actions -> CLI : run analyze --format json,graphml,dsm
+CLI -> Core : quick scan + semantic analysis
+Core --> CLI : Graph JSON + DSM + metrics + policy results
+CLI -> GAI : send {graph, dsm, metrics, policyHits}
+GAI -> LLM : Explain cycles,\npropose refactor steps,\ndraft policy rules,\nestimate impact
+LLM --> GAI : explanations + suggestions + rule templates
+GAI -> Actions : enriched report (HTML/SARIF/JSON)
+Actions -> Checks : create status (pass/fail) + summary
+Actions -> PR : post comment with GAI summary & suggested fixes
+Developer -> PR : review, apply suggested changes
+@enduml

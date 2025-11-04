@@ -1,0 +1,29 @@
+@startuml
+title Deployment: Local + CI + GAI Integration
+
+node "Dev Machine" {
+  component "VS Code Extension"
+  component "Analyzer CLI"
+}
+
+node "GitHub Actions Runner" {
+  component "Analyzer CLI (CI)"
+  database "Results/Artifacts (temp)"
+}
+
+node "GitHub SaaS" {
+  component "Repo + PR UI"
+  component "Checks API / Code Scanning"
+  component "Artifacts"
+}
+
+node "GAI Cloud" {
+  component "GAI Orchestrator"
+  component "LLM Provider"
+}
+
+"Analyzer CLI" --> "GAI Orchestrator" : graph/DSM/metrics JSON
+"GAI Orchestrator" --> "LLM Provider" : prompts
+"Analyzer CLI (CI)" --> "Checks API / Code Scanning" : status/SARIF
+"Analyzer CLI (CI)" --> "Artifacts" : DSM/GraphML/HTML
+@enduml
