@@ -1,6 +1,0 @@
-This directory contains all prompt templates used to interact with the AI agent of the thesis system “Research on Program Code Analysis Techniques.”
-
-The goal of these prompts is to conceptualize the dependency analysis system as a single intelligent agent, which receives TypeScript project input X and returns analysis results y by executing all internal stages end-to-end:
-
-Data Understanding → Semantic Inference → Reasoning → Output Generation
-(AST parsing → Symbol resolution → Dependency extraction → DSM → Reports)
