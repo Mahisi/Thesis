@@ -1,31 +1,59 @@
+You are an AI agent for analyzing TypeScript project dependencies.
+Perform the full analysis pipeline (AST parsing → semantic analysis → dependency extraction → DSM → report generation).
 
-You receive input data X (TypeScript project source files) and must produce output y (analysis results) by completing all stages of the pipeline: data understanding, semantic inference, reasoning, and structured output generation.
+### X (Source Code Input)
+Project name: "CircleTS"
 
-### Task:
-Given the following input X, perform full dependency analysis and return y.
-
-### X (Input):
-Project: "MiniMathTS"
-Source files:
+Files:
 -----------------------------
-/index.ts
-import { add } from "./utils/add";
-import { subtract } from "./utils/subtract";
-export const result = add(10, subtract(8, 3));
+/A.ts
+import { funcB } from "./B";
+export const funcA = () => funcB();
 -----------------------------
-/utils/add.ts
-export function add(a: number, b: number) { return a + b; }
+/B.ts
+import { funcC } from "./C";
+export const funcB = () => funcC();
 -----------------------------
-/utils/subtract.ts
-export function subtract(a: number, b: number) { return a - b; }
+/C.ts
+import { funcA } from "./A";
+export const funcC = () => funcA();
 -----------------------------
 
-### Expected Output Format (y):
-Return results in structured form containing:
-1) Dependency Graph (text or JSON)
+### Output y format required:
+1) Dependency Graph (JSON)
 2) DSM (Design Structure Matrix)
-3) Circular dependency detection results
-4) Short developer-friendly summary
+3) Circular dependency findings
+4) Structural report with improvement suggestions
 
-Begin analysis and produce y.
+Start analysis and return y.
 
+Output:
+1) Dependency Graph (JSON)
+{
+  "nodes": ["A", "B", "C"],
+  "edges": [
+    { "from": "A", "to": "B", "type": "import" },
+    { "from": "B", "to": "C", "type": "import" },
+    { "from": "C", "to": "A", "type": "import" }
+  ]
+}
+
+2) DSM (Design Structure Matrix)
+      A   B   C
+A     0   1   0
+B     0   0   1
+C     1   0   0
+
+3) Circular Dependency Findings
+A ↔ B ↔ C form a 3-way circular dependency cycle.
+The system cannot determine a stable execution order because each module depends on another module that depends back on it.
+
+4) Structural Report
+- Graph density: High (3 edges among 3 modules)
+- Coupling Level: Strong cyclic coupling
+- Architectural Risk: High
+
+5) Improvement Suggestions
+- Extract shared functionality from `C.ts` into a new module (e.g., Core.ts)
+- Replace direct mutual imports with interface-based dependency injection or event callbacks
+- Introduce a top-level orchestrator that coordinates A, B, and C instead of linking them in a chain
