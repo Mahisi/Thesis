@@ -1,45 +1,38 @@
-This directory contains all prompt templates used to interact with the AI agent of the thesis system “Research on Program Code Analysis Techniques.”
+README — Real Prompt Examples for AI Agent
 
-The goal of these prompts is to conceptualize the dependency analysis system as a single intelligent agent, which receives TypeScript project input X and returns analysis results y by executing all internal stages end-to-end:
+This folder contains two real prompt examples that demonstrate how the thesis system (TypeScript Dependency Analysis Agent) can work as an end-to-end AI solution. Each prompt sends input data X (TypeScript project source code) to the agent and receives output y (dependency analysis results).
 
-Data Understanding → Semantic Inference → Reasoning → Output Generation
-(AST parsing → Symbol resolution → Dependency extraction → DSM → Reports)
+Prompt 1 — Zero-Shot Example
+File: prompt1_zero_shot.txt
+This prompt provides the agent with only one new project X and does not include any previous examples. The agent must perform the whole workflow independently, including:
 
-Purpose of first prompt: it runs the AI agent with only one new observation X → outputs y
-Purpose of second prompt: it provides several (X, y) examples before requesting a new prediction to improve accuracy
+AST parsing, semantic understanding, dependency extraction, DSM generation, and final report creation.
 
-Expected workflow of the AI agent
+The output (y) should include:
+1)Dependency graph (JSON)
+2)Design Structure Matrix (DSM)
+3)Circular dependency detection (if it exists)
+4)Summary with architectural insights and recommendations
 
-Every prompt instructs the system to:
-1.Understand the project structure and imported modules
-2.Resolve semantic relationships using type and symbol scope
-3.Detect dependency structures, including cycles and type-only dependencies
-4.Produce structured analysis results
+The zero-shot prompt evaluates the system’s ability to analyze code without prior context.
 
-Standard Output Format (y)
+Prompt 2 — Few-Shot Example
+File: prompt2_few_shot.txt
+This prompt first introduces several known (X, y) examples to show the agent what kind of output is expected. After the examples, the prompt provides a new project X and asks the agent to generate output y.
 
-Regardless of prompt type, the expected result should always include:
+The output format is the same as in the zero-shot prompt:
+1)Dependency graph
+2)DSM
+3)Circular dependency findings
+4)Structural report and recommendations
 
-1) Dependency Graph (text/JSON)
-2) Design Structure Matrix (DSM)
-3) Circular dependency and architecture issue detection
-4) Runtime vs type-only dependency classification (if applicable)
-5) Developer-friendly summary + improvement suggestions
+The few-shot prompt demonstrates that the agent can improve reasoning and consistency by using the previous examples.
 
+Difference Between the Prompts
 
-Zero-shot prompt:
-1)Evaluates how well the agent performs without prior examples
-2)Uses only the given X
-3)Useful for initial baseline
+Zero-shot: The agent receives only the new project X and must produce output y without seeing any previous examples.
+Few-shot: The agent receives several (X, y) example pairs before being asked to generate y for a new X.
 
-Few-shot prompt:
-1)Demonstrates improved reasoning with previous (X,y) pairs
-2)Provides multiple examples before solving a new X
-3)Useful in real-world iterative analysis
+Purpose of These Prompts
 
-
-Usage Notes:
-These prompts are documentation, examples, and test cases for the thesis system.
-The system should always produce deterministic, structured, reproducible results.
-The prompts do not ask the model to explain its chain-of-thought — only to output the final analysis results.
-
+These prompts show how the thesis system can be conceptualized as a single AI agent that transforms input source code into dependency analysis results. They serve as documentation and demonstration for Labwork 1.4.
