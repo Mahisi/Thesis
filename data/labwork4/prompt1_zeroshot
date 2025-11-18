@@ -1,4 +1,4 @@
-You are an AI agent representing an end-to-end TypeScript dependency analysis system. 
+
 You receive input data X (TypeScript project source files) and must produce output y (analysis results) by completing all stages of the pipeline: data understanding, semantic inference, reasoning, and structured output generation.
 
 ### Task:
